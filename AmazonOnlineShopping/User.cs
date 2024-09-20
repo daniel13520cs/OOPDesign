@@ -15,39 +15,49 @@ namespace AmazonOnlineShopping
         {
             this.Authorization = authorization;
         }
-        public virtual void Login(string password) {
-            if (this is Guest)
+        public virtual User Login(string password) 
+        {
+            if (AmazonOnlineShoppingSystem.Accounts.ContainsKey(password))
             {
-                return;
+                return AmazonOnlineShoppingSystem.Accounts[password];
             }
+            return null;
+        }
+        public virtual User Logout()
+        {
+            return new Guest();
+        }
+        public virtual User Register(string password)
+        {
+            if (!AmazonOnlineShoppingSystem.Accounts.ContainsKey(password))
+            {
+                AmazonOnlineShoppingSystem.Accounts.Add(password, new Customer());
+                return AmazonOnlineShoppingSystem.Accounts[password];
+            }
+            return this;
+        }
+
+        public virtual void Test()
+        {
             if (this is Customer)
             {
-                this.Authorization = Authorization.CUSTOMER;
-            } else if (this is Admin)
+                Console.WriteLine("customer");
+            } else if (this is Guest)
             {
-                this.Authorization = Authorization.ADMIN;
+                Console.WriteLine("guest");
             }
-        }
-        public virtual void Logout()
-        {
-            if (this is Guest)
-            {
-                return;
-            }
-            this.Authorization = Authorization.GUEST;
         }
     }
 
     public class Guest : User
     {
         public Guest() : base(Authorization.GUEST) { }
-
-        public User Register(User user, string password) {
-            if (!AmazonOnlineShoppingSystem.Accounts.ContainsKey(user))
-            {
-                AmazonOnlineShoppingSystem.Accounts.Add(user, password);
-                return new Customer();
-            }
+        public override User Login(string password)
+        {
+            return null;
+        }
+        public override User Logout()
+        {
             return this;
         }
     }
@@ -61,6 +71,11 @@ namespace AmazonOnlineShopping
     public class Admin : User
     {
         public Admin() : base(Authorization.ADMIN) { }
+
+        public override User Register(string password)
+        {
+            return null;
+        }
 
     }
 }

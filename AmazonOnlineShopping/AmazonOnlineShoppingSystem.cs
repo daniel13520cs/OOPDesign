@@ -8,7 +8,7 @@ namespace AmazonOnlineShopping
 {
     public class AmazonOnlineShoppingSystem
     {
-        public static Dictionary<User, string> Accounts = new();
+        public static Dictionary<string, User> Accounts = new();
         
         private static AmazonOnlineShoppingSystem Instance { get; set; }
         private AmazonOnlineShoppingSystem()
